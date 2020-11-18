@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Vue.js App</title>
+</head>
+<body>
+
+	<div id="app1">
+
+		<br />
+		<form>
+			<label for="fiterField"> Field: <select id="filterField"
+				v-model="filterField">
+					<option value="">Disable filters</option>
+					<option value="isActive">Active user</option>
+					<option value="name">Name</option>
+					<option value="email">Email</option>
+					<option value="balance">Balance</option>
+					<option value="registered">Date registered</option>
+			</select>
+			</label> <label for="filterQuery"> Query: <input type="text"
+				id="filterQuery" v-model="filterQuery">
+			</label> <span v-show="this.filterField === 'isActive'"> Active: <label
+				for="userStateActive"> Yes: <input type="radio" value="true"
+					name="userState" id="userStateActive" selected
+					v-model="filterUserState" v-bind:value="true">
+			</label> <label for="userStateInactive"> No: <input type="radio"
+					value="false" name="userState" id="userStateInactive"
+					v-model="filterUserState" v-bind:value="false">
+			</label>
+			</span>
+		</form>
+		<br /> filter field: {{ filterField }} <br /> filter query: {{
+		filterQuery }} <br /> filter user state: {{ filterUserState }} <br />
+		{{ typeof filterUserState }} <br />
+		<table>
+			<tr v-for="person in people" v-show="filterRow(person)">
+				<td>{{ person.name }}</td>
+				<td>{{ person.email }}</td>
+				<td>{{ formatBalance(person.balance) }}</td>
+				<td>{{ formatDate(person.registered) }}</td>
+				<td>{{ ((person.isActive)?"Attivo":"Non attivo") }}</td>
+			</tr>
+		</table>
+	</div>
+	<script src="https://unpkg.com/vue"></script>
+	<script type="text/javascript">
+	
+	const app1 = new Vue({
+        el: '#app1',
+        methods: {
+        	activeStatus(person) {
+        		return (person.isActive)?"attivo":"non attivo"
+        	},
+        	formatBalance(balance) {
+               return this.currency + balance;
+            },
+            formatDate(date) {
+               let registered = new Date(date);
+               return registered.toLocaleString('en-US');
+            },
+            formatDate(date) {
+               let registered = new Date(date);
+               return registered.toLocaleString('en-US');
+            },
+            filterRow(person) {
+                let result = true;
+          
+                if(this.filterField) {
+         
+                  if(this.filterField === 'isActive') {
+
+                    result = this.filterUserState === person.isActive;
+
+                  } else {
+
+                    let query = this.filterQuery,
+                  field = person[this.filterField];
+//                     console.log("typeof field: " + typeof field);
+//                     console.log(" field: " +  field);
+//                     console.log(" query: " +  query);
+//                     console.log(" this.filterField: " +  this.filterField);
+                    //if(typeof field === 'number') {
+                    if (this.filterField === 'balance') {
+                      //query = query.replace(this.currency, '');  
+                      console.log("confronto balance....");
+                      try {
+                        result = eval(field + query);
+                      } catch (e) {}
+
+                    } else {
+
+                      field = field.toLowerCase();
+                      result = field.includes(query.toLowerCase());
+
+                    }
+                  }
+                }
+
+                return result;
+
+              }
+        },
+        data: {
+        	currency: '$',
+        	filterField: '',
+            filterQuery: '',
+            filterUserState: false,
+          people: [
+        	  {
+        		    "index": 0,
+        		    "guid": "fa06bc15-91a2-4215-b277-f431140c8069",
+        		    "isActive": false,
+        		    "balance": "1686.71",
+        		    "name": "Callie",
+        		    "surname": "Wilson",
+        		    "email": "callie.wilson@undefined.com",
+        		    "registered": "Sun Jul 07 2019 09:23:52 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 1,
+        		    "guid": "d307ca1c-7085-4486-a246-a5cbfc61f539",
+        		    "isActive": false,
+        		    "balance": "2099.00",
+        		    "name": "Latisha",
+        		    "surname": "Shannon",
+        		    "email": "latisha.shannon@undefined.net",
+        		    "registered": "Thu May 28 2020 05:32:31 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 2,
+        		    "guid": "5bebea26-a511-4df6-8750-669d000dfb61",
+        		    "isActive": true,
+        		    "balance": "1365.03",
+        		    "name": "Kristy",
+        		    "surname": "Lawson",
+        		    "email": "kristy.lawson@undefined.biz",
+        		    "registered": "Sun Apr 22 2018 22:53:57 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 3,
+        		    "guid": "727435e1-8dea-49b3-b152-29e5bc685050",
+        		    "isActive": true,
+        		    "balance": "1576.29",
+        		    "name": "Banks",
+        		    "surname": "Melton",
+        		    "email": "banks.melton@undefined.me",
+        		    "registered": "Thu Aug 15 2019 14:18:57 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 4,
+        		    "guid": "c1bf9ebd-c466-4876-b1ce-e7834cd58a44",
+        		    "isActive": false,
+        		    "balance": "3873.45",
+        		    "name": "Anna",
+        		    "surname": "Graves",
+        		    "email": "anna.graves@undefined.ca",
+        		    "registered": "Sun Oct 08 2017 06:22:29 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 5,
+        		    "guid": "c7490d25-e2a4-4eac-a779-b75b2e0fb1de",
+        		    "isActive": true,
+        		    "balance": "1311.92",
+        		    "name": "Jacqueline",
+        		    "surname": "Lopez",
+        		    "email": "jacqueline.lopez@undefined.co.uk",
+        		    "registered": "Tue Oct 17 2017 02:08:52 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 6,
+        		    "guid": "3fb0ee2a-28ac-4bc4-9ed7-bec57876cc61",
+        		    "isActive": false,
+        		    "balance": "2993.32",
+        		    "name": "Curry",
+        		    "surname": "Fisher",
+        		    "email": "curry.fisher@undefined.us",
+        		    "registered": "Sun Apr 14 2019 13:08:10 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 7,
+        		    "guid": "ced5be27-77ee-4c60-a523-7e5fb878e501",
+        		    "isActive": true,
+        		    "balance": "3873.87",
+        		    "name": "Shirley",
+        		    "surname": "Jennings",
+        		    "email": "shirley.jennings@undefined.biz",
+        		    "registered": "Thu Apr 14 2016 15:04:55 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 8,
+        		    "guid": "93907183-46c0-46e8-a944-b96043925ae3",
+        		    "isActive": false,
+        		    "balance": "3468.44",
+        		    "name": "Kendra",
+        		    "surname": "Oneil",
+        		    "email": "kendra.oneil@undefined.name",
+        		    "registered": "Mon Nov 21 2016 14:42:57 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 9,
+        		    "guid": "ff153e3c-a9cd-4092-9c52-f6c7da901139",
+        		    "isActive": false,
+        		    "balance": "1711.91",
+        		    "name": "Ayers",
+        		    "surname": "Osborn",
+        		    "email": "ayers.osborn@undefined.info",
+        		    "registered": "Sat Mar 22 2014 17:02:29 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 10,
+        		    "guid": "290a6b7b-324d-4d75-ab97-9ffe75756225",
+        		    "isActive": true,
+        		    "balance": "1445.12",
+        		    "name": "Swanson",
+        		    "surname": "Flores",
+        		    "email": "swanson.flores@undefined.tv",
+        		    "registered": "Sat Jun 13 2020 09:10:43 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 11,
+        		    "guid": "8bf2064a-a0fc-4dbc-b999-bde6d1f2ea15",
+        		    "isActive": true,
+        		    "balance": "3237.66",
+        		    "name": "Juliana",
+        		    "surname": "Santana",
+        		    "email": "juliana.santana@undefined.io",
+        		    "registered": "Wed Mar 16 2016 13:39:16 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 12,
+        		    "guid": "c3ea135b-5e99-41a7-9dbf-b9877955972e",
+        		    "isActive": false,
+        		    "balance": "1296.90",
+        		    "name": "Lynch",
+        		    "surname": "Barber",
+        		    "email": "lynch.barber@undefined.com",
+        		    "registered": "Sat Dec 15 2018 11:27:29 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 13,
+        		    "guid": "ee164058-7827-4af8-bdb6-427221135f36",
+        		    "isActive": true,
+        		    "balance": "1934.01",
+        		    "name": "Veronica",
+        		    "surname": "Shepard",
+        		    "email": "veronica.shepard@undefined.net",
+        		    "registered": "Sat Jun 27 2020 20:21:09 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 14,
+        		    "guid": "9ff4aaa7-9ec6-47a1-95b0-3c28cb380f10",
+        		    "isActive": false,
+        		    "balance": "3532.63",
+        		    "name": "Wise",
+        		    "surname": "Conway",
+        		    "email": "wise.conway@undefined.biz",
+        		    "registered": "Mon Jan 30 2017 22:45:37 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 15,
+        		    "guid": "1bd6168e-7cea-4a2b-9207-1f17332a0040",
+        		    "isActive": false,
+        		    "balance": "3326.33",
+        		    "name": "Hawkins",
+        		    "surname": "Warner",
+        		    "email": "hawkins.warner@undefined.me",
+        		    "registered": "Fri Aug 19 2016 07:57:45 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 16,
+        		    "guid": "4a44e5d6-0b56-4853-a687-cd50032b5e68",
+        		    "isActive": true,
+        		    "balance": "1730.76",
+        		    "name": "Gaines",
+        		    "surname": "Cunningham",
+        		    "email": "gaines.cunningham@undefined.ca",
+        		    "registered": "Sat Jul 05 2014 22:47:59 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 17,
+        		    "guid": "9f5c54ce-969a-4053-9daf-760bb32cd5b9",
+        		    "isActive": true,
+        		    "balance": "2567.68",
+        		    "name": "Lucy",
+        		    "surname": "Gallagher",
+        		    "email": "lucy.gallagher@undefined.co.uk",
+        		    "registered": "Sat Mar 12 2016 02:54:14 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 18,
+        		    "guid": "6d983b53-d54f-4474-af3f-6666511b8933",
+        		    "isActive": false,
+        		    "balance": "2015.56",
+        		    "name": "Cynthia",
+        		    "surname": "Carr",
+        		    "email": "cynthia.carr@undefined.us",
+        		    "registered": "Sun May 24 2020 11:06:57 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 19,
+        		    "guid": "ba376a60-31bf-4a5a-9900-0bdbffa05b29",
+        		    "isActive": true,
+        		    "balance": "3950.48",
+        		    "name": "Carrie",
+        		    "surname": "Dawson",
+        		    "email": "carrie.dawson@undefined.biz",
+        		    "registered": "Sun Jul 17 2016 22:57:45 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 20,
+        		    "guid": "4aba4622-ece7-41bf-aef2-5b712e3ab728",
+        		    "isActive": true,
+        		    "balance": "3771.45",
+        		    "name": "Mathews",
+        		    "surname": "Velazquez",
+        		    "email": "mathews.velazquez@undefined.name",
+        		    "registered": "Tue Feb 19 2019 10:22:56 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 21,
+        		    "guid": "c506b127-3b1d-4dd5-9343-7d901cb23ab1",
+        		    "isActive": false,
+        		    "balance": "3138.16",
+        		    "name": "Beth",
+        		    "surname": "Saunders",
+        		    "email": "beth.saunders@undefined.info",
+        		    "registered": "Mon Jul 23 2018 05:25:31 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 22,
+        		    "guid": "f75139b1-1f21-4437-ac05-ce78babf70ef",
+        		    "isActive": false,
+        		    "balance": "3270.97",
+        		    "name": "Parsons",
+        		    "surname": "Blackburn",
+        		    "email": "parsons.blackburn@undefined.tv",
+        		    "registered": "Wed Feb 12 2014 05:18:04 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 23,
+        		    "guid": "5c3d975a-891d-4890-a4e5-0bda3e7ad42c",
+        		    "isActive": false,
+        		    "balance": "1693.12",
+        		    "name": "Webster",
+        		    "surname": "Bennett",
+        		    "email": "webster.bennett@undefined.io",
+        		    "registered": "Tue Oct 08 2019 12:02:19 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 24,
+        		    "guid": "9cbeb2e1-b4d8-4e8a-994d-f5fe4020ff73",
+        		    "isActive": true,
+        		    "balance": "1256.45",
+        		    "name": "Morrow",
+        		    "surname": "Owens",
+        		    "email": "morrow.owens@undefined.com",
+        		    "registered": "Fri May 15 2015 10:48:55 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 25,
+        		    "guid": "dcaaf32b-3d4a-4e82-a658-98de177055a0",
+        		    "isActive": true,
+        		    "balance": "3225.21",
+        		    "name": "Keisha",
+        		    "surname": "Moss",
+        		    "email": "keisha.moss@undefined.net",
+        		    "registered": "Sun May 04 2014 09:08:30 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 26,
+        		    "guid": "81a0da6c-8b45-4ebf-9647-05a859d8a84d",
+        		    "isActive": true,
+        		    "balance": "3309.47",
+        		    "name": "Sampson",
+        		    "surname": "Merritt",
+        		    "email": "sampson.merritt@undefined.biz",
+        		    "registered": "Thu Mar 03 2016 10:40:12 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 27,
+        		    "guid": "a0951d47-92e6-4474-b330-d6b7d96949f4",
+        		    "isActive": true,
+        		    "balance": "3946.69",
+        		    "name": "Clayton",
+        		    "surname": "Cole",
+        		    "email": "clayton.cole@undefined.me",
+        		    "registered": "Sun Feb 17 2019 02:20:27 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 28,
+        		    "guid": "1145783a-ad64-4399-aecf-eda7ed565101",
+        		    "isActive": true,
+        		    "balance": "1355.69",
+        		    "name": "Middleton",
+        		    "surname": "Michael",
+        		    "email": "middleton.michael@undefined.ca",
+        		    "registered": "Sun Mar 06 2016 13:47:29 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 29,
+        		    "guid": "aa16d4ac-d81e-41b6-a6fa-a75f2a7933de",
+        		    "isActive": true,
+        		    "balance": "3962.09",
+        		    "name": "Elise",
+        		    "surname": "Day",
+        		    "email": "elise.day@undefined.co.uk",
+        		    "registered": "Wed Nov 25 2015 07:56:49 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 30,
+        		    "guid": "5700994d-13ab-45a4-a140-af4276e68922",
+        		    "isActive": false,
+        		    "balance": "3642.19",
+        		    "name": "Gale",
+        		    "surname": "Daugherty",
+        		    "email": "gale.daugherty@undefined.us",
+        		    "registered": "Wed Nov 02 2016 08:01:05 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 31,
+        		    "guid": "3f65c23e-49d8-4686-8ee9-32711263925c",
+        		    "isActive": false,
+        		    "balance": "1993.19",
+        		    "name": "Mcclain",
+        		    "surname": "Sherman",
+        		    "email": "mcclain.sherman@undefined.biz",
+        		    "registered": "Sat Sep 26 2015 17:28:14 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 32,
+        		    "guid": "64a0f7d7-1c23-4053-9802-f178ce4502f5",
+        		    "isActive": false,
+        		    "balance": "1731.34",
+        		    "name": "Ester",
+        		    "surname": "Sims",
+        		    "email": "ester.sims@undefined.name",
+        		    "registered": "Sat Oct 25 2014 05:11:01 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 33,
+        		    "guid": "ab4ca49b-8a15-4778-b82c-1d0c1ad11101",
+        		    "isActive": false,
+        		    "balance": "1968.28",
+        		    "name": "Nettie",
+        		    "surname": "Bush",
+        		    "email": "nettie.bush@undefined.info",
+        		    "registered": "Sun Jul 10 2016 01:39:14 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 34,
+        		    "guid": "52428856-d69e-4d54-b7ad-f5bdae73e5c8",
+        		    "isActive": false,
+        		    "balance": "1988.50",
+        		    "name": "Bruce",
+        		    "surname": "Frye",
+        		    "email": "bruce.frye@undefined.tv",
+        		    "registered": "Fri Dec 05 2014 06:21:45 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 35,
+        		    "guid": "9cf22837-f438-4e85-be4b-e0c41ebc1d64",
+        		    "isActive": false,
+        		    "balance": "3958.74",
+        		    "name": "Lillian",
+        		    "surname": "Soto",
+        		    "email": "lillian.soto@undefined.io",
+        		    "registered": "Sat Jan 30 2016 23:50:11 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 36,
+        		    "guid": "43ad859e-cc69-4efa-a06d-54d210d73e6d",
+        		    "isActive": true,
+        		    "balance": "3356.60",
+        		    "name": "Angelia",
+        		    "surname": "Mcmillan",
+        		    "email": "angelia.mcmillan@undefined.com",
+        		    "registered": "Wed Jan 13 2016 12:23:38 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 37,
+        		    "guid": "639aa549-1d54-4af1-b6dc-a8a6ca9ae090",
+        		    "isActive": false,
+        		    "balance": "3691.43",
+        		    "name": "Eaton",
+        		    "surname": "Lynch",
+        		    "email": "eaton.lynch@undefined.net",
+        		    "registered": "Sun Jan 19 2014 09:35:15 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 38,
+        		    "guid": "bddc47be-a9e2-4a3f-b157-506381931760",
+        		    "isActive": false,
+        		    "balance": "2519.12",
+        		    "name": "Thompson",
+        		    "surname": "Hammond",
+        		    "email": "thompson.hammond@undefined.biz",
+        		    "registered": "Tue Dec 31 2019 10:38:26 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 39,
+        		    "guid": "2e88cf03-d2ce-43d0-a7b5-88b50471a98e",
+        		    "isActive": false,
+        		    "balance": "3898.26",
+        		    "name": "Harvey",
+        		    "surname": "Berry",
+        		    "email": "harvey.berry@undefined.me",
+        		    "registered": "Fri Jun 03 2016 19:04:46 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 40,
+        		    "guid": "0aba5c0c-5bb8-4bcc-8aef-0b2f152ef850",
+        		    "isActive": true,
+        		    "balance": "3686.52",
+        		    "name": "Albert",
+        		    "surname": "Finch",
+        		    "email": "albert.finch@undefined.ca",
+        		    "registered": "Fri Mar 20 2020 01:55:46 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 41,
+        		    "guid": "44358052-3cd0-47b0-8c12-8c5d1792d31b",
+        		    "isActive": false,
+        		    "balance": "2248.83",
+        		    "name": "Patrica",
+        		    "surname": "Noel",
+        		    "email": "patrica.noel@undefined.co.uk",
+        		    "registered": "Mon Oct 14 2019 22:26:51 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 42,
+        		    "guid": "faac0c50-a94e-4ae4-93e4-30758d6518f4",
+        		    "isActive": false,
+        		    "balance": "2074.55",
+        		    "name": "Elsie",
+        		    "surname": "Huber",
+        		    "email": "elsie.huber@undefined.us",
+        		    "registered": "Sun Jul 15 2018 13:39:08 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 43,
+        		    "guid": "c658aa55-fab0-419b-8654-92ff148c0bbc",
+        		    "isActive": true,
+        		    "balance": "3823.67",
+        		    "name": "Scott",
+        		    "surname": "Pierce",
+        		    "email": "scott.pierce@undefined.biz",
+        		    "registered": "Tue Apr 05 2016 10:32:12 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 44,
+        		    "guid": "7bae46fc-cf72-4f7e-b196-a3e7b4d5a3f1",
+        		    "isActive": true,
+        		    "balance": "2527.81",
+        		    "name": "Robles",
+        		    "surname": "Barton",
+        		    "email": "robles.barton@undefined.name",
+        		    "registered": "Sat Apr 11 2015 16:55:05 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 45,
+        		    "guid": "b384a82e-0871-45c4-98ed-ea8b4ddd5cb2",
+        		    "isActive": true,
+        		    "balance": "2105.64",
+        		    "name": "Wiggins",
+        		    "surname": "Gilmore",
+        		    "email": "wiggins.gilmore@undefined.info",
+        		    "registered": "Thu Feb 08 2018 18:27:39 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 46,
+        		    "guid": "47db42b5-5b68-49f8-b1e2-d4e85b4c3424",
+        		    "isActive": true,
+        		    "balance": "3751.66",
+        		    "name": "Staci",
+        		    "surname": "Snyder",
+        		    "email": "staci.snyder@undefined.tv",
+        		    "registered": "Tue Dec 08 2015 07:55:17 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 47,
+        		    "guid": "4c2dbd5c-9f93-4447-8517-e93e3f0daa39",
+        		    "isActive": true,
+        		    "balance": "2350.74",
+        		    "name": "Regina",
+        		    "surname": "Horn",
+        		    "email": "regina.horn@undefined.io",
+        		    "registered": "Sun Oct 22 2017 08:36:06 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 48,
+        		    "guid": "bf78580d-1374-4e9f-8975-06726ccc51da",
+        		    "isActive": false,
+        		    "balance": "1192.87",
+        		    "name": "Lenora",
+        		    "surname": "Bowers",
+        		    "email": "lenora.bowers@undefined.com",
+        		    "registered": "Tue Oct 25 2016 19:09:30 GMT+0000 (UTC)"
+        		  },
+        		  {
+        		    "index": 49,
+        		    "guid": "28bfe2c6-7e4f-4c00-88e2-5b92fc0d1196",
+        		    "isActive": false,
+        		    "balance": "2596.67",
+        		    "name": "Dina",
+        		    "surname": "Little",
+        		    "email": "dina.little@undefined.net",
+        		    "registered": "Tue Jan 12 2016 14:59:44 GMT+0000 (UTC)"
+        		  }
+        		]
+        },
+        
+      });
+	
+          </script>
+</body>
+</html>
